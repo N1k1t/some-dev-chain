@@ -1,0 +1,32 @@
+{
+  "name": "some-dev-chain",
+  "version": "0.1.0",
+  "description": "Library for pack front whith chains",
+  "main": "index.js",
+  "scripts": {
+    "start": "node test/run",
+    "short-test": "node test/pack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "autoprefixer": "^9.0.1",
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-es2015-template-literals": "^6.22.0",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-plugin-transform-remove-strict-mode": "0.0.2",
+    "browserify": "^16.2.2",
+    "chokidar": "^2.0.4",
+    "colors": "^1.3.1",
+    "commander-without-exit": "^1.0.0",
+    "csso": "^3.5.1",
+    "glob": "^7.1.2",
+    "gulp-livereload": "^3.8.1",
+    "gulp-util": "^3.0.8",
+    "node-sass": "^4.9.2",
+    "postcss": "^7.0.1",
+    "some-async-chain": "^0.4.0",
+    "uglify-js": "^3.4.6"
+  }
+}
