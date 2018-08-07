@@ -64,7 +64,7 @@ module.exports = {
 		await eachFiles(files, config, ([name, file], resolve) => {
 			let result = babel.transform(file.contents, {
 				presets : ['es2015'], 
-				plugins : ['transform-es2015-template-literals','transform-object-assign', 'transform-remove-strict-mode']
+				plugins : ['transform-es2015-template-literals','transform-object-assign', 'transform-remove-strict-mode', 'syntax-async-functions']
 			});
 
 			task.writeFile(name, result.code);
@@ -105,6 +105,7 @@ module.exports = {
 			sass.render({
 				data: globalVars + file.contents.toString(),
 				outputStyle: 'compressed',
+				includePaths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir]
 			}, (err, result) => {
 				if ( err ) return error(`${name}: ${err}`);
 
@@ -155,6 +156,8 @@ module.exports = {
 			return Async.createPromise((resolve) => {
 				let result = UglifyJS.minify(file.contents.toString());
 
+				console.log(result);
+
 				if ( result.error ) return error(`${name}: ${result.error}`);
 
 				resolve(result.code);
@@ -184,7 +187,10 @@ module.exports = {
 	},
 	writeFiles: async (task, config, next, error) => {
 		let { files } = task;
+		let { ignoreRemoveFiles } = config;
 		let waitList = [];
+
+		ignoreRemoveFiles = ignoreRemoveFiles || /\)/;
 
 		await eachFiles(files, config, ([name, file], resolve) => {
 			let { dir, ext, name: fileName } = file.pathParts;
@@ -193,11 +199,13 @@ module.exports = {
 			resultPath = parsePath(task, resultPath);
 			task.ignoreFileWatchign(resultPath);
 
+			file.writePath = resultPath;
+
 			fs.writeFile(resultPath, file.contents, (err) => {
 				if ( err ) return error(err);
 
 				task.unignoreFileWatchign(resultPath);
-				task.removeFile(name);
+				if ( !ignoreRemoveFiles.test(Path.normalize(`${dir}/${fileName}${ext}`)) ) task.removeFile(name);
 
 				task.message(`<${task.name}>`, `Writed in ${colors.cyan.bold(resultPath)}`, 'cyan', 'bgBlack');
 				resolve();
@@ -256,17 +264,18 @@ module.exports = {
 		next();
 	},
 	livereload: async (task, config, next, error) => {
-		const { reload, checkListen, listen } = require('./livereload-server');
+		const { reload, changed, checkListen, listen } = require('./livereload-server');
 		let { type } = config;
 		let { files } = task;
 
 		if ( type == 'reload' ) {
 			checkListen(() => reload());
-			next();
+			return next();
 		}
 
 		await eachFiles(files, config, ([name, file], resolve) => {
-			console.log(name);
+			checkListen(() => changed(file.writePath));
+			resolve();
 		});
 		
 		next();
