@@ -1,6 +1,6 @@
 {
   "name": "some-dev-chain",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Library for pack front whith chains",
   "main": "index.js",
   "scripts": {
