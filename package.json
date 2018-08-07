@@ -17,6 +17,7 @@
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-es2015-template-literals": "^6.22.0",
     "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
     "browserify": "^16.2.2",
     "chokidar": "^2.0.4",
