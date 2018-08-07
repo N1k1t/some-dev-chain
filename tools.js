@@ -156,8 +156,6 @@ module.exports = {
 			return Async.createPromise((resolve) => {
 				let result = UglifyJS.minify(file.contents.toString());
 
-				console.log(result);
-
 				if ( result.error ) return error(`${name}: ${result.error}`);
 
 				resolve(result.code);
