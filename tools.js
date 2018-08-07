@@ -63,8 +63,8 @@ module.exports = {
 
 		await eachFiles(files, config, ([name, file], resolve) => {
 			let result = babel.transform(file.contents, {
-				presets : ['es2015'], 
-				plugins : ['transform-async-to-generator', 'transform-regenerator', 'transform-object-assign', 'transform-es2015-template-literals', 'transform-remove-strict-mode']
+				presets : ['es2017'], 
+				plugins : ['transform-async-to-generator', 'transform-object-assign', 'transform-es2015-template-literals', 'transform-remove-strict-mode']
 			});
 
 			task.writeFile(name, result.code);
