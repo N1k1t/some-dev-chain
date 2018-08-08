@@ -60,12 +60,30 @@ module.exports = {
 	babel: async (task, config, next, error) => {
 		let { files } = task;
 		let babel = require('babel-core');
+		let { type } = config;
 
 		await eachFiles(files, config, ([name, file], resolve) => {
-			let result = babel.transform(file.contents, {
-				presets : ['es2017'], 
-				plugins : ['transform-async-to-generator', 'transform-object-assign', 'transform-es2015-template-literals', 'transform-remove-strict-mode']
-			});
+			let result = '';
+
+			switch( type ) {
+				
+				case 'insert-polifils':
+					result = babel.transform(file.contents, {
+						presets : ['es2015'],
+						plugins : [
+							'transform-runtime', 
+							'transform-async-to-generator'
+						]
+					});
+					break;
+				
+				default:
+					result = babel.transform(file.contents, {
+						presets : ['es2015'], 
+						plugins : ['transform-object-assign', 'transform-es2015-template-literals', 'transform-remove-strict-mode']
+					});
+					break;
+			}
 
 			task.writeFile(name, result.code);
 			resolve();
