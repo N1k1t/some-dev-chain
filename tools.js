@@ -46,7 +46,9 @@ module.exports = {
 
 		for ( let [name, file] of files ){
 			waitList.push(Async.createPromise((resolve) => browserify(file, {
-				insertGlobalVars: globalVars
+				insertGlobalVars: globalVars,
+				paths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir],
+				basedir: file.pathParts.dir
 			}).bundle((err, result) => {
 				if ( err ) return error(`${name}: ${err}`);
 
