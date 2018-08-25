@@ -212,7 +212,7 @@ module.exports = {
 
 		await eachFiles(files, config, ([name, file], resolve) => {
 			let { dir, ext, name: fileName } = file.pathParts;
-			let resultPath = config.path || `${config.dir || dir}${config.afterDir || ''}${config.fileName || fileName}${config.prefix ? `-${config.prefix}` : ''}${config.ext || ext}`;
+			let resultPath = config.path || `${config.dir || dir}/${config.afterDir || ''}/${config.fileName || fileName}${config.prefix ? `-${config.prefix}` : ''}${config.ext || ext}`;
 
 			resultPath = parsePath(task, resultPath);
 			task.ignoreFileWatchign(resultPath);
