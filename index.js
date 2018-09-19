@@ -69,10 +69,14 @@ class Task{
 		});
 
 		this._watcher.on('change', (path) => {
-			if ( ignoreChangesInFiles.indexOf(path) > -1 ) return false;
+			const pathSegments = Path.parse(path);
+
+			if (ignoreChangesInFiles.indexOf(path) > -1) return false;
+			if (this.config.watch.ignoreByFilename && this.config.watch.ignoreByFilename.test(`${pathSegments.name}${pathSegments.ext}`)) return false;
+			if (this.config.watch.ignoreByPath && this.config.watch.ignoreByPath.test(path)) return false;
 
 			this.message('[Watcher]', `${colors.magenta.bold(path)} - has been changed`, 'magenta', 'bgMagenta');
-			this._runChain(Object.assign(Path.parse(path), { full: path }));
+			this._runChain(Object.assign(pathSegments, { full: path }));
 		});
 	}
 	break(){
