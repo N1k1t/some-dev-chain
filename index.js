@@ -5,7 +5,7 @@ const readline = require('readline');
 const glob = require('glob');
 const chokidar = require('chokidar');
 const Async = require('some-async-chain');
-const tools = require('./tools');
+const tools = require('./src/tools');
 const Path = require('path');
 const gutil = require('gulp-util');
 
