@@ -4,7 +4,7 @@
   "description": "Library for pack front whith chains",
   "main": "index.js",
   "scripts": {
-    "start": "node test/run",
+    "start": "node _test/run",
     "short-test": "node test/pack"
   },
   "author": "",
