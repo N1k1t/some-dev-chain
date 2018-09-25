@@ -2,6 +2,8 @@ const glob = require('glob');
 const chokidar = require('chokidar');
 const Async = require('some-async-chain');
 const colors = require('colors/safe');
+const Path = require('path');
+const gutil = require('gulp-util');
 
 module.exports = class Task{
 	constructor(name, config){
