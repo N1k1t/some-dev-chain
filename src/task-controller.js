@@ -5,6 +5,8 @@ const colors = require('colors/safe');
 const Path = require('path');
 const gutil = require('gulp-util');
 
+const tools = require('./tools');
+
 module.exports = class Task{
 	constructor(name, config){
 		let self = this;
@@ -50,7 +52,7 @@ module.exports = class Task{
 		this._watcher.on('change', (path) => {
 			const pathSegments = Path.parse(path);
 
-			if (ignoreChangesInFiles.indexOf(path) > -1) return false;
+			if (this.config.instance.ignoreChangesInFiles.indexOf(path) > -1) return false;
 			if (this.config.watch.ignoreByFilename && this.config.watch.ignoreByFilename.test(`${pathSegments.name}${pathSegments.ext}`)) return false;
 			if (this.config.watch.ignoreByPath && this.config.watch.ignoreByPath.test(path)) return false;
 
@@ -72,14 +74,14 @@ module.exports = class Task{
 	}
 
 	ignoreFileWatchign(path){
-		ignoreChangesInFiles.push(path);
+		this.config.instance.ignoreChangesInFiles.push(path);
 	}
 	unignoreFileWatchign(path){
-		let index = ignoreChangesInFiles.indexOf();
+		let index = this.config.instance.ignoreChangesInFiles.indexOf();
 
 		if ( index == -1 ) return false;
 
-		ignoreChangesInFiles.splice(index, 1);
+		this.config.instance.ignoreChangesInFiles.splice(index, 1);
 	}
 
 	writeFile(path, file){
@@ -176,10 +178,6 @@ module.exports = class Task{
 				self.error = err;
 			});
 		}
-	}
-
-	get allTasks(){
-		return tasks
 	}
 
 	static create(...args){

@@ -1,15 +1,44 @@
 {
-  "name": "some-dev-chain",
-  "version": "0.5.2",
-  "description": "Library for pack front whith chains",
-  "main": "index.js",
-  "scripts": {
-    "start": "node _test/run",
-    "short-test": "node test/pack"
+  "_from": "some-dev-chain@0.5.1",
+  "_id": "some-dev-chain@0.5.1",
+  "_inBundle": false,
+  "_integrity": "sha512-J7eKcPHsDOQrbmzl5slr3BKT41UW1HUhfX8YWocWTgIuNyqyD4EpXucKKuKQ2zDsym3JrgOPAQhL8kHCNSDeAA==",
+  "_location": "/some-dev-chain",
+  "_phantomChildren": {
+    "anymatch": "2.0.0",
+    "async-each": "1.0.1",
+    "braces": "2.3.2",
+    "fsevents": "1.2.4",
+    "glob-parent": "3.1.0",
+    "inherits": "2.0.3",
+    "is-binary-path": "1.0.1",
+    "is-glob": "4.0.0",
+    "lodash.debounce": "4.0.8",
+    "normalize-path": "2.1.1",
+    "path-is-absolute": "1.0.1",
+    "readdirp": "2.1.0",
+    "upath": "1.1.0"
   },
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "some-dev-chain@0.5.1",
+    "name": "some-dev-chain",
+    "escapedName": "some-dev-chain",
+    "rawSpec": "0.5.1",
+    "saveSpec": null,
+    "fetchSpec": "0.5.1"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/some-dev-chain/-/some-dev-chain-0.5.1.tgz",
+  "_shasum": "1cd5c2cea21c289e2a1309caf98ebfe6db345eb6",
+  "_spec": "some-dev-chain@0.5.1",
+  "_where": "C:\\WORKS\\WEB\\app.landing.page",
   "author": "",
-  "license": "ISC",
-  "devDependencies": {},
+  "bundleDependencies": false,
   "dependencies": {
     "autoprefixer": "^9.0.1",
     "babel-core": "^6.26.3",
@@ -33,5 +62,16 @@
     "postcss": "^7.0.1",
     "some-async-chain": "^0.4.0",
     "uglify-js": "^3.4.6"
-  }
+  },
+  "deprecated": false,
+  "description": "Library for pack front whith chains",
+  "devDependencies": {},
+  "license": "ISC",
+  "main": "index.js",
+  "name": "some-dev-chain",
+  "scripts": {
+    "short-test": "node test/pack",
+    "start": "node _test/run"
+  },
+  "version": "0.5.1"
 }

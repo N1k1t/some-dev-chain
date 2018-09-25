@@ -1,14 +1,13 @@
 const fs = require('fs');
 const commander = require('commander-without-exit');
 const readline = require('readline');
-const Path = require('path');
-const gutil = require('gulp-util');
 
 const tools = require('./src/tools');
 const Task = require('./src/task-controller');
+const TasksInstance = require('./src/tasks-instance');
 
 const tasks = {};
-const ignoreChangesInFiles = [];
+const instance = new TasksInstance();
 
 commander
 	.command('task')
@@ -24,19 +23,18 @@ readline.createInterface({
 	terminal: false
 }).on('line', (line) => commander.parse([...process.argv, ...line.split(' ')]));
 
-
-
 module.exports = {
 	init,
 	createTask,
 	registerTool,
 	onceTaskRun,
 	Task,
+	tasks,
 	tools
 };
 
 function createTask(name, config){
-	return Task.create(name, Object.assign(config, {commander}));
+	return Task.create(name, Object.assign(config, {commander, instance}));
 }
 function init(inputTasks){
 	for ( let key in inputTasks ){
