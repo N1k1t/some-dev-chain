@@ -36,6 +36,7 @@ module.exports = {
 		let browserify = require('browserify');
 		let waitList = [];
 		let globalVars = {};
+		const customPaths = config.paths || [];
 
 		for ( let key in config.globalVars || {} ){
 			let variable = config.globalVars[key];
@@ -47,7 +48,7 @@ module.exports = {
 		for ( let [name, file] of files ){
 			waitList.push(Async.createPromise((resolve) => browserify(file, {
 				insertGlobalVars: globalVars,
-				paths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir],
+				paths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir, ...customPaths],
 				basedir: file.pathParts.dir
 			}).bundle((err, result) => {
 				if ( err ) return error(`${name}: ${err}`);
@@ -114,6 +115,7 @@ module.exports = {
 		let autoprefixer = require('autoprefixer');
 		let postcss = require('postcss');
 		let globalVars = '';
+		const customPaths = config.paths || [];
 
 		for ( let key in config.globalVars ){
 			let value = config.globalVars[key];
@@ -125,7 +127,7 @@ module.exports = {
 			sass.render({
 				data: globalVars + file.contents.toString(),
 				outputStyle: 'compressed',
-				includePaths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir]
+				includePaths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir, ...customPaths]
 			}, (err, result) => {
 				if ( err ) return error(`${name}: ${err}`);
 
@@ -272,9 +274,8 @@ module.exports = {
 	if: (task, config, next, error) => {
 		let { variables } = task;
 
-		if ( variables[config.variable] && config.eq.test(variables[config.variable]) ) {
+		if ((config.handler && config.handler.call(this)) || (variables[config.variable] && config.eq.test(variables[config.variable]))) {
 			task.mergeChain(config.then);
-
 			return next();
 		}
 		if ( config.else ) task.mergeChain(config.else);
