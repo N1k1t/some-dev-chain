@@ -274,7 +274,7 @@ module.exports = {
 	if: (task, config, next, error) => {
 		let { variables } = task;
 
-		if ((config.handler && config.handler.call(task)) || (variables[config.variable] && config.eq.test(variables[config.variable]))) {
+		if ((config.handler && config.handler(task)) || (variables[config.variable] && config.eq.test(variables[config.variable]))) {
 			task.mergeChain(config.then);
 			return next();
 		}
