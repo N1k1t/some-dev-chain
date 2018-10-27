@@ -150,7 +150,14 @@ module.exports = {
 		let { files } = task;
 
 		await eachFiles(files, config, ([name, file], resolve) => {
-			task.writeFile(name, `document.head.appendChild(document.createElement("style","${name}")).textContent = "${file.contents.toString().replace(/"/g, '\\"').replace(/\n|\r|\t/g,'')}";`);
+			task.writeFile(name, `
+				(function(){
+					var element = document.createElement("style");
+
+					element.setAttribute("name", "${config.styleName || name.replace(/\\/g, '/')}");
+					document.head.appendChild(element).textContent = "${file.contents.toString().replace(/"/g, '\\"').replace(/\n|\r|\t/g,'')}";
+				}());
+			`.replace(/\n|\r|\t/g,''));
 			resolve();
 		});
 
