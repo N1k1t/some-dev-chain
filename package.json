@@ -76,5 +76,5 @@
     "short-test": "node test/pack",
     "start": "node test/run"
   },
-  "version": "0.6.1"
+  "version": "0.6.2"
 }
