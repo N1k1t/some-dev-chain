@@ -32,30 +32,36 @@ module.exports = {
 		});
 	},
 	browserify: (task, config, next, error) => {
-		let {files} = task;
-		let browserify = require('browserify');
-		let waitList = [];
-		let globalVars = {};
+		const {files} = task;
+		const browserify = require('browserify');
+		const syntaxError = require('syntax-error');
+		const waitList = [];
+		const globalVars = {};
 		const customPaths = config.paths || [];
 
-		for (let key in config.globalVars || {}) {
+		for (const key in config.globalVars || {}) {
 			let variable = config.globalVars[key];
 
 			variable = typeof variable == 'function' ? variable(task) : variable;
 			globalVars[key] = () => JSON.stringify(variable);
 		}
 
-		for (let [name, file] of files) {
-			waitList.push(Async.createPromise((resolve) => browserify(file, {
+		for (const [name, file] of files) {
+			const syntaxErrorResult = syntaxError(file.contents, file.pathParts.full);
+			if (syntaxErrorResult) return error(syntaxErrorResult);
+
+			const result = browserify(file, {
 				insertGlobalVars: globalVars,
 				paths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir, ...customPaths],
 				basedir: file.pathParts.dir
-			}).bundle((err, result) => {
+			});
+
+			waitList.push(new Promise(resolve => result.bundle((err, result) => {
 				if (err) return error(`${name}: ${err}`);
 
 				task.writeFile(name, result);
 				resolve();
-			})));
+			})).catch(error));
 		}
 
 		Promise.all(waitList).then(() => next());
@@ -182,7 +188,7 @@ module.exports = {
 		next();
 
 		function jsMin(name, file) {
-			return Async.createPromise((resolve) => {
+			return new Promise((resolve) => {
 				let result = UglifyJS.minify(file.contents.toString());
 
 				if (result.error) return error(`${name}: ${result.error}`);
@@ -191,7 +197,7 @@ module.exports = {
 			});
 		}
 		function cssMin(name, file) {
-			return Async.createPromise((resolve) => {
+			return new Promise((resolve) => {
 				let result = csso.minify(file.contents.toString());
 
 				resolve(result.css);

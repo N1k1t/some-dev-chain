@@ -100,8 +100,9 @@ class Task{
 		this.merge = this.merge.concat(chain);
 	}
 	_createFile(path, contents) {
-		let pathParts = Path.parse(path);
+		const pathParts = Path.parse(path);
 
+		Object.assign(pathParts, {full: `${pathParts.dir}\\${pathParts.base}`});
 		return Object.assign(new gutil.File({cwd: `${__dirname}\\${path}` , base: pathParts.base || '' , path: path , contents: contents}), {
 			pathParts: pathParts
 		});

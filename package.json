@@ -61,6 +61,7 @@
     "node-sass": "^4.9.2",
     "postcss": "^7.0.1",
     "some-async-chain": "^0.4.0",
+    "syntax-error": "^1.4.0",
     "uglify-js": "^3.4.6"
   },
   "deprecated": false,
