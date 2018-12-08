@@ -2,19 +2,19 @@ const fs = require('fs');
 const Async = require('some-async-chain');
 const Path = require('path');
 const colors = require('colors/safe');
-const { eachFiles, parsePath } = require('./utils.js');
+const {eachFiles, parsePath} = require('./utils.js');
 
 module.exports = {
 	getFiles: (task, config, next, error) => {
-		let { data } = task;
+		let {data} = task;
 
-		if ( config.path ) return getFileByPath();
+		if (config.path) return getFileByPath();
 
-		function getFileByPath(){
+		function getFileByPath() {
 			let path = parsePath(task, config.path);
 
 			fs.readFile(path, (err, file) => {
-				if ( err ) return error(`${path}: ${err}`);
+				if (err) return error(`${path}: ${err}`);
 
 				task.writeFile(path, file);
 				next();
@@ -22,36 +22,36 @@ module.exports = {
 		}
 	},
 	getWatchedFile: (task, config, next, error) => {
-		let { full, base } = task.input;
+		let {full, base} = task.input;
 
 		fs.readFile(full, (err, file) => {
-			if ( err ) return error(err);
+			if (err) return error(err);
 
 			task.writeFile(full, file);
 			next();
 		});
 	},
 	browserify: (task, config, next, error) => {
-		let { files } = task;
+		let {files} = task;
 		let browserify = require('browserify');
 		let waitList = [];
 		let globalVars = {};
 		const customPaths = config.paths || [];
 
-		for ( let key in config.globalVars || {} ){
+		for (let key in config.globalVars || {}) {
 			let variable = config.globalVars[key];
 
 			variable = typeof variable == 'function' ? variable(task) : variable;
 			globalVars[key] = () => JSON.stringify(variable);
 		}
 
-		for ( let [name, file] of files ){
+		for (let [name, file] of files) {
 			waitList.push(Async.createPromise((resolve) => browserify(file, {
 				insertGlobalVars: globalVars,
 				paths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir, ...customPaths],
 				basedir: file.pathParts.dir
 			}).bundle((err, result) => {
-				if ( err ) return error(`${name}: ${err}`);
+				if (err) return error(`${name}: ${err}`);
 
 				task.writeFile(name, result);
 				resolve();
@@ -61,14 +61,14 @@ module.exports = {
 		Promise.all(waitList).then(() => next());
 	},
 	babel: async (task, config, next, error) => {
-		let { files } = task;
+		let {files} = task;
 		let babel = require('babel-core');
-		let { type } = config;
+		let {type} = config;
 
 		await eachFiles(files, config, ([name, file], resolve) => {
 			let result = '';
 
-			switch( type ) {
+			switch(type) {
 				
 				case 'insert-polifils':
 					result = babel.transform(file.contents, {
@@ -95,7 +95,7 @@ module.exports = {
 		next();
 	},
 	concat: async (task, config, next, error) => {
-		let { files } = task;
+		let {files} = task;
 		let result = '';
 
 		await eachFiles(files, config, ([name, file], resolve) => {
@@ -110,14 +110,14 @@ module.exports = {
 		next();
 	},
 	sass: async (task, config, next, error) => {
-		let { files } = task;
+		let {files} = task;
 		let sass = require('node-sass');
 		let autoprefixer = require('autoprefixer');
 		let postcss = require('postcss');
 		let globalVars = '';
 		const customPaths = config.paths || [];
 
-		for ( let key in config.globalVars ){
+		for (let key in config.globalVars) {
 			let value = config.globalVars[key];
 
 			globalVars += `$${key}: ${toType(value)};`;
@@ -129,9 +129,9 @@ module.exports = {
 				outputStyle: 'compressed',
 				includePaths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), file.pathParts.dir, ...customPaths]
 			}, (err, result) => {
-				if ( err ) return error(`${name}: ${err}`);
+				if (err) return error(`${name}: ${err}`);
 
-				postcss([ autoprefixer({ browsers: ['last 30 versions'], cascade: false }) ]).process(result.css, { from: undefined }).then((result) => {
+				postcss([ autoprefixer({browsers: ['last 30 versions'], cascade: false}) ]).process(result.css, {from: undefined}).then((result) => {
 					task.writeFile(name, result.css);
 					resolve();
 				});
@@ -140,18 +140,18 @@ module.exports = {
 
 		next();
 
-		function toType(value){
-			if ( /^[\d]+$|^\#/.test(value) ) return value;
+		function toType(value) {
+			if (/^[\d]+$|^\#/.test(value)) return value;
 
 			return `'${value}'`;
 		}
 	},
 	cssToJs: async (task, config, next, error) => {
-		let { files } = task;
+		let {files} = task;
 
 		await eachFiles(files, config, ([name, file], resolve) => {
 			task.writeFile(name, `
-				(function(){
+				(function() {
 					var element = document.createElement("style");
 
 					element.setAttribute("name", "${config.styleName || name.replace(/\\/g, '/')}");
@@ -164,16 +164,16 @@ module.exports = {
 		next();
 	},
 	minify: async (task, config, next, error) => {
-		let { files } = task;
+		let {files} = task;
 		let UglifyJS = require('uglify-js');
 		let csso = require('csso');
 
 		await eachFiles(files, config, async ([name, file], resolve) => {
-			let { ext } = file.pathParts;
+			let {ext} = file.pathParts;
 			let result = null;
 			
-			if ( ext == '.js' ) result = await jsMin(name, file);
-			if ( ext == '.css' || ext == '.scss' ) result = await cssMin(name, file);
+			if (ext == '.js') result = await jsMin(name, file);
+			if (ext == '.css' || ext == '.scss') result = await cssMin(name, file);
 
 			task.writeFile(name, result);
 			resolve();
@@ -181,16 +181,16 @@ module.exports = {
 
 		next();
 
-		function jsMin(name, file){
+		function jsMin(name, file) {
 			return Async.createPromise((resolve) => {
 				let result = UglifyJS.minify(file.contents.toString());
 
-				if ( result.error ) return error(`${name}: ${result.error}`);
+				if (result.error) return error(`${name}: ${result.error}`);
 
 				resolve(result.code);
 			});
 		}
-		function cssMin(name, file){
+		function cssMin(name, file) {
 			return Async.createPromise((resolve) => {
 				let result = csso.minify(file.contents.toString());
 
@@ -199,28 +199,28 @@ module.exports = {
 		}
 	},
 	setVariable: (task, config, next, error) => {
-		let { value, alias } = config;
+		let {value, alias} = config;
 
 		task.variables[alias] = typeof value == 'function' ? value(task) : value;
 		
 		next();
 	},
 	removeVariable: (task, config, next, error) => {
-		let { alias } = config;
+		let {alias} = config;
 
 		delete task.variables[alias];
 		
 		next();
 	},
 	writeFiles: async (task, config, next, error) => {
-		let { files } = task;
-		let { ignoreRemoveFiles } = config;
+		let {files} = task;
+		let {ignoreRemoveFiles} = config;
 		let waitList = [];
 
 		ignoreRemoveFiles = ignoreRemoveFiles || /\)/;
 
 		await eachFiles(files, config, ([name, file], resolve) => {
-			let { dir, ext, name: fileName } = file.pathParts;
+			let {dir, ext, name: fileName} = file.pathParts;
 			let resultPath = config.path || `${config.dir || dir}/${config.afterDir || ''}/${config.fileName || fileName}${config.prefix ? `-${config.prefix}` : ''}${config.ext || ext}`;
 
 			resultPath = parsePath(task, resultPath);
@@ -229,10 +229,10 @@ module.exports = {
 			file.writePath = resultPath;
 
 			fs.writeFile(resultPath, file.contents, (err) => {
-				if ( err ) return error(err);
+				if (err) return error(err);
 
 				task.unignoreFileWatchign(resultPath);
-				if ( !ignoreRemoveFiles.test(Path.normalize(`${dir}/${fileName}${ext}`)) ) task.removeFile(name);
+				if (!ignoreRemoveFiles.test(Path.normalize(`${dir}/${fileName}${ext}`))) task.removeFile(name);
 
 				task.message(`<${task.name}>`, `Writed in ${colors.cyan.bold(resultPath)}`, 'cyan', 'bgBlack');
 				resolve();
@@ -248,10 +248,11 @@ module.exports = {
 		});
 
 		let newTask = new task.constructor(config.alias ? `@${config.alias}` : 'insert', config);
-
+		
 		await newTask._runChain();
+		if (newTask.error) return error(newTask.error);
 
-		for ( let [name, file] of newTask.files ){
+		for (let [name, file] of newTask.files) {
 			task.writeFile(name, file.contents);
 		}
 
@@ -260,7 +261,7 @@ module.exports = {
 	insertTask: async (task, config, next, error) => {
 		let foundedTask = task.allTasks[config.taskName];
 
-		if ( !foundedTask ) return error(`${name}: This task is not unavalible`);
+		if (!foundedTask) return error(`${name}: This task is not unavalible`);
 
 		config.variables = Object.assign(config.variables || {}, task.variables);
 		Object.assign(config, {
@@ -272,29 +273,29 @@ module.exports = {
 
 		await newTask._runChain();
 
-		for ( let [name, file] of newTask.files ){
+		for (let [name, file] of newTask.files) {
 			task.writeFile(name, file.contents);
 		}
 
 		next();
 	},
 	if: (task, config, next, error) => {
-		let { variables } = task;
+		let {variables} = task;
 
 		if ((config.handler && config.handler(task)) || (variables[config.variable] && config.eq.test(variables[config.variable]))) {
 			task.mergeChain(config.then);
 			return next();
 		}
-		if ( config.else ) task.mergeChain(config.else);
+		if (config.else) task.mergeChain(config.else);
 
 		next();
 	},
 	livereload: async (task, config, next, error) => {
-		const { reload, changed, checkListen, listen } = require('./livereload-server');
-		let { type } = config;
-		let { files } = task;
+		const {reload, changed, checkListen, listen} = require('./livereload-server');
+		let {type} = config;
+		let {files} = task;
 
-		if ( type == 'reload' ) {
+		if (type == 'reload') {
 			checkListen(() => reload());
 			return next();
 		}

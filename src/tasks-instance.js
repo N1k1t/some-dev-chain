@@ -1,7 +1,9 @@
-module.exports = class TasksInstance{
+class TasksInstance{
 	constructor(){
 		Object.assign(this, {
 			ignoreChangesInFiles: []
 		});
 	}
 }
+
+module.exports = TasksInstance;

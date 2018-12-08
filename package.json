@@ -73,7 +73,7 @@
   "name": "some-dev-chain",
   "scripts": {
     "short-test": "node test/pack",
-    "start": "node _test/run"
+    "start": "node test/run"
   },
   "version": "0.6.0"
 }
