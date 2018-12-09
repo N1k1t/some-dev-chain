@@ -1,4 +1,3 @@
-const Async = require('some-async-chain');
 const Path = require('path');
 
 module.exports = {
@@ -6,7 +5,7 @@ module.exports = {
 		let waitList = [];
 
 		for (let file of files) {
-			waitList.push(Async.createPromise((resolve) => cb(file, resolve)));
+			waitList.push(new Promise((resolve) => cb(file, resolve)));
 		}
 
 		await Promise.all(waitList);

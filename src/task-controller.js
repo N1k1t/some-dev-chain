@@ -1,6 +1,5 @@
 const glob = require('glob');
 const chokidar = require('chokidar');
-const Async = require('some-async-chain');
 const colors = require('colors/safe');
 const Path = require('path');
 const gutil = require('gulp-util');
@@ -161,7 +160,7 @@ class Task{
 		cb(this);
 
 		function runSegment(segment) {
-			return Async.createPromise((resolve, reject) => {
+			return new Promise((resolve, reject) => {
 				if (!tools[segment.name]) return this.message(`<${this.name}>`, colors.red.bold(`Tool [${segment.name}] is unavalible`), 'red', 'bgRed');
 
 				const segmentRunner = tools[segment.name](self, segment, resolve, reject);

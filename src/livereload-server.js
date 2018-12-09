@@ -1,6 +1,5 @@
 const livereload = require('gulp-livereload');
 const http = require('http');
-const Async = require('some-async-chain');
 const childProcess = require('child_process');
 
 let isListened = false;
@@ -26,7 +25,7 @@ module.exports = {
 }
 
 function checkConnection() {
-	return Async.createPromise(resolve => {
+	return new Promise(resolve => {
 		makeRequest('test', resolve, err => childProcess.fork(module.filename, ['--is-livereload-thread']).on('message', resolve));
 	});
 }
@@ -35,7 +34,7 @@ function makeRequest(path, onSuccess = Function(null), onError = Function(null))
 }
 
 async function createServer(cb) {
-	await Async.createPromise(resolve => livereload.listen({quiet: true}, resolve));
+	await new Promise(resolve => livereload.listen({quiet: true}, resolve));
 
 	http.createServer(onRequest).listen(1000, '127.100.100.100', cb);
 }

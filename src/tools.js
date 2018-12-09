@@ -1,5 +1,4 @@
 const fs = require('fs');
-const Async = require('some-async-chain');
 const Path = require('path');
 const colors = require('colors/safe');
 const {eachFiles, parsePath} = require('./utils.js');
