@@ -1,27 +1,34 @@
 const fs = require('fs');
 const Path = require('path');
 const colors = require('colors/safe');
-const {eachFiles, parsePath} = require('./utils.js');
+const {eachFiles, insertValiablesInPath, fsPromise, promiseWrap} = require('./utils');
+const {readFile} = fsPromise;
 
 module.exports = {
-	getFiles: (task, config, next, error) => {
-		let {data} = task;
+	getFiles: async (task, config, next, error) => {
+		const glob = require('glob');
+		const glopPromise = promiseWrap(glob);
 
-		if (config.path) return getFileByPath();
+		const {data} = task;
+		const paths = config.path instanceof Array ? config.path : [config.path];
+		const inputFilesPaths = paths.map(path => insertValiablesInPath(task, path));
+		const filePathArrays = await Promise.all(inputFilesPaths.map(path => glopPromise(path, config.globOptions || {})));
 
-		function getFileByPath() {
-			let path = parsePath(task, config.path);
+		let filePaths = filePathArrays.reduce((map, array) => map.concat(array), []);
+		filePaths = filePaths.filter(path => {
+			const pathSegments = Path.parse(path);
 
-			fs.readFile(path, (err, file) => {
-				if (err) return error(`${path}: ${err}`);
+			if (config.ignoreByFilename && config.ignoreByFilename.test(`${pathSegments.name}${pathSegments.ext}`)) return false;
+			return true;
+		});
 
-				task.writeFile(path, file);
-				next();
-			});
-		}
+		const files = await Promise.all(filePaths.map(path => readFile(path)));
+
+		files.map((file, key) => task.writeFile(filePaths[key], file));
+		return next();
 	},
 	getWatchedFile: (task, config, next, error) => {
-		let {full, base} = task.input;
+		const {full, base} = task.input;
 
 		fs.readFile(full, (err, file) => {
 			if (err) return error(err);
@@ -66,9 +73,9 @@ module.exports = {
 		Promise.all(waitList).then(() => next());
 	},
 	babel: async (task, config, next, error) => {
-		let {files} = task;
-		let babel = require('babel-core');
-		let {type} = config;
+		const {files} = task;
+		const babel = require('babel-core');
+		const {type} = config;
 
 		await eachFiles(files, config, ([name, file], resolve) => {
 			let result = '';
@@ -228,7 +235,7 @@ module.exports = {
 			let {dir, ext, name: fileName} = file.pathParts;
 			let resultPath = config.path || `${config.dir || dir}/${config.afterDir || ''}/${config.fileName || fileName}${config.prefix ? `-${config.prefix}` : ''}${config.ext || ext}`;
 
-			resultPath = parsePath(task, resultPath);
+			resultPath = insertValiablesInPath(task, resultPath);
 			task.ignoreFileWatchign(resultPath);
 
 			file.writePath = resultPath;
@@ -311,6 +318,16 @@ module.exports = {
 		});
 		
 		next();
+	},
+	middleware: (task, config, next, error) => {
+		return config.handler(task, config, next, error);
+	},
+	log: (task, config, next, error) => {
+		console.dir(task);
+		console.log('-------------------------');
+		console.dir(config);
+
+		return next();
 	}
 }
 

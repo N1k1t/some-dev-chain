@@ -1,4 +1,3 @@
-const glob = require('glob');
 const chokidar = require('chokidar');
 const colors = require('colors/safe');
 const Path = require('path');

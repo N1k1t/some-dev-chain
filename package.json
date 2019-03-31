@@ -1,42 +1,41 @@
 {
-  "_from": "some-dev-chain@0.5.1",
-  "_id": "some-dev-chain@0.5.1",
+  "_args": [
+    [
+      "some-dev-chain@0.6.3",
+      "C:\\Users\\n1k1t\\works\\WEB\\project.101-club\\service.site"
+    ]
+  ],
+  "_development": true,
+  "_from": "some-dev-chain@0.6.3",
+  "_id": "some-dev-chain@0.6.3",
   "_inBundle": false,
-  "_integrity": "sha512-J7eKcPHsDOQrbmzl5slr3BKT41UW1HUhfX8YWocWTgIuNyqyD4EpXucKKuKQ2zDsym3JrgOPAQhL8kHCNSDeAA==",
+  "_integrity": "sha512-HiZixCJg18W9AxVyJF0vzHXxq9T7PwYQqHIJMPZ1NydrflevVa21ptWeNvohgE8Zrj06F22uZ518yDUwe+IFcQ==",
   "_location": "/some-dev-chain",
   "_phantomChildren": {
-    "anymatch": "2.0.0",
-    "async-each": "1.0.1",
-    "braces": "2.3.2",
-    "fsevents": "1.2.4",
-    "glob-parent": "3.1.0",
+    "fs.realpath": "1.0.0",
+    "inflight": "1.0.6",
     "inherits": "2.0.3",
-    "is-binary-path": "1.0.1",
-    "is-glob": "4.0.0",
-    "lodash.debounce": "4.0.8",
-    "normalize-path": "2.1.1",
-    "path-is-absolute": "1.0.1",
-    "readdirp": "2.1.0",
-    "upath": "1.1.0"
+    "minimatch": "3.0.4",
+    "once": "1.4.0",
+    "path-is-absolute": "1.0.1"
   },
   "_requested": {
     "type": "version",
     "registry": true,
-    "raw": "some-dev-chain@0.5.1",
+    "raw": "some-dev-chain@0.6.3",
     "name": "some-dev-chain",
     "escapedName": "some-dev-chain",
-    "rawSpec": "0.5.1",
+    "rawSpec": "0.6.3",
     "saveSpec": null,
-    "fetchSpec": "0.5.1"
+    "fetchSpec": "0.6.3"
   },
   "_requiredBy": [
-    "#USER",
-    "/"
+    "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/some-dev-chain/-/some-dev-chain-0.5.1.tgz",
+  "_resolved": "https://registry.npmjs.org/some-dev-chain/-/some-dev-chain-0.6.3.tgz",
   "_shasum": "1cd5c2cea21c289e2a1309caf98ebfe6db345eb6",
-  "_spec": "some-dev-chain@0.5.1",
-  "_where": "C:\\WORKS\\WEB\\app.landing.page",
+  "_spec": "0.6.3",
+  "_where": "C:\\Users\\n1k1t\\works\\WEB\\project.101-club\\service.site",
   "author": "",
   "bundleDependencies": false,
   "dependencies": {
@@ -49,7 +48,9 @@
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2017": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "browserify": "^16.2.2",
     "chokidar": "^2.0.4",
     "colors": "^1.3.1",
@@ -66,9 +67,7 @@
   },
   "deprecated": false,
   "description": "Library for pack front whith chains",
-  "devDependencies": {
-    "babel-preset-es2015": "^6.24.1"
-  },
+  "devDependencies": {},
   "license": "ISC",
   "main": "index.js",
   "name": "some-dev-chain",
