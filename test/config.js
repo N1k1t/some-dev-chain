@@ -14,7 +14,7 @@ module.exports = {
 				variable: '$input',
 				eq: /./, 
 				then: [
-					{name: 'setVariable', alias: '$dir', value: ({variables: vars}) => Path.dirname(vars.$input)},
+					{name: 'setVariable', alias: '$dir', value: ({$input}) => Path.dirname($input)},
 					{name: 'getFiles', path: '($input)'}
 				],
 				else: [

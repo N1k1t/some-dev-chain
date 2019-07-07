@@ -1,12 +1,10 @@
 module.exports = promiseWrap;
 
-function promiseWrap(method) {
-	return (...args) => new Promise((res, rej) => {
-		method(...args, (error, ...resultArgs) => {
-			if (error) {
-				return rej(error);
-			}
 
+function promiseWrap(fn) {
+	return (...args) => new Promise(res => {
+		fn(...args, (error, ...resultArgs) => {
+			if (error) throw error;
 			return res(...resultArgs);
 		});
 	});

@@ -1,23 +1,43 @@
-# Some DEV chain
-Makes flexible chains of handlers from object-oriented config.
+# Some dev chain
+Flexible handling and parsing of project sources
 
-#### Install
+## Install
 ```sh
 $ npm i --save-dev some-dev-chain
 ```
 
-#### Methods
+## CLI
+##### Help
+```sh
+$ node_modules/.bin/dev-chain --help
+```
+##### Serve (servering handling from config)
+```sh
+$ node_modules/.bin/dev-chain serve :path-to-config
+```
+## Documentation
+##### Parser tools
 | Name | Description | Configuration
-| ------ | ------ | ------ |
-| Todo | - | - |
+| ------ | ----------- | ------ |
+| Sass | Sass parser | **globalVars** *::string[]* - Insert global variables into root of main sass module |
+||| **paths** *::string[]* - Custom paths for import modules inside sass |
+| Babel | Parsing to ES5 | - |
+| Minify | Minify js (ES5) or css | - |
+| Browserify | Builder of js modules | **globalVars** *::string[]* - Insert global variables into root of main js module |
+||| **paths** *::string[]* - Custom paths for require modules inside js |
+| Livereload | Livereload trigger | **type** *::string* - Use **"reload"** value for reload page |
+||| **type** *::string* - Use **"change"** value for insert changes |
 
-#### Tools
+##### Inner tools
 | Name | Description | Configuration
-| ------ | ------ | ------ |
-| Todo | - | - |
+| ------ | ----------- | ------ |
+| TODO | - | - |
 
 ## Run as service
-#### Configuration example 1
+Todo...
+
+## Examples
+##### Configuration example 1
 ```js
 const {init} = require('some-dev-chain');
 
@@ -83,7 +103,7 @@ init({
 });
 ```
 
-#### Configuration example 2
+##### Configuration example 2
 ```js
 const {init} = require('some-dev-chain');
 

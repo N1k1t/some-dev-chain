@@ -1,50 +1,12 @@
 {
-  "_args": [
-    [
-      "some-dev-chain@0.6.3",
-      "C:\\Users\\n1k1t\\works\\WEB\\project.101-club\\service.site"
-    ]
-  ],
-  "_development": true,
-  "_from": "some-dev-chain@0.6.3",
-  "_id": "some-dev-chain@0.6.3",
-  "_inBundle": false,
-  "_integrity": "sha512-HiZixCJg18W9AxVyJF0vzHXxq9T7PwYQqHIJMPZ1NydrflevVa21ptWeNvohgE8Zrj06F22uZ518yDUwe+IFcQ==",
-  "_location": "/some-dev-chain",
-  "_phantomChildren": {
-    "fs.realpath": "1.0.0",
-    "inflight": "1.0.6",
-    "inherits": "2.0.3",
-    "minimatch": "3.0.4",
-    "once": "1.4.0",
-    "path-is-absolute": "1.0.1"
-  },
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "some-dev-chain@0.6.3",
-    "name": "some-dev-chain",
-    "escapedName": "some-dev-chain",
-    "rawSpec": "0.6.3",
-    "saveSpec": null,
-    "fetchSpec": "0.6.3"
-  },
-  "_requiredBy": [
-    "#DEV:/"
-  ],
-  "_resolved": "https://registry.npmjs.org/some-dev-chain/-/some-dev-chain-0.6.3.tgz",
-  "_shasum": "1cd5c2cea21c289e2a1309caf98ebfe6db345eb6",
-  "_spec": "0.6.3",
-  "_where": "C:\\Users\\n1k1t\\works\\WEB\\project.101-club\\service.site",
-  "author": "",
-  "bundleDependencies": false,
+  "author": "n1k1t",
   "dependencies": {
     "autoprefixer": "^9.0.1",
     "babel-core": "^6.26.3",
+    "babel-plugin-transform-object-assign": "^6.22.0",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-es2015-template-literals": "^6.22.0",
-    "babel-plugin-transform-object-assign": "^6.22.0",
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -59,21 +21,29 @@
     "glob": "^7.1.2",
     "gulp-livereload": "^3.8.1",
     "gulp-util": "^3.0.8",
+    "lodash": "^4.17.11",
     "node-sass": "^4.9.2",
     "postcss": "^7.0.1",
+    "request-promise": "^4.2.4",
     "some-async-chain": "^0.4.0",
     "syntax-error": "^1.4.0",
     "uglify-js": "^3.4.6"
   },
-  "deprecated": false,
   "description": "Library for pack front whith chains",
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "sinon": "^7.3.2"
+  },
   "license": "ISC",
-  "main": "index.js",
+  "main": "src/index.js",
   "name": "some-dev-chain",
   "scripts": {
-    "short-test": "node test/pack",
-    "start": "node test/run"
+    "unit-tests": "mocha --exit --timeout 10000 test/unit/*",
+    "integration-tests": "mocha --exit --timeout 10000 test/integration/*"
+  },
+  "bin": {
+    "dev-chain": "./bin/index.js"
   },
   "version": "0.7.0"
 }
