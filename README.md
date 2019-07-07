@@ -39,9 +39,7 @@ Todo...
 ## Examples
 ##### Configuration example 1
 ```js
-const {init} = require('some-dev-chain');
-
-init({
+module.exports = {
 	'pack': {
 		watch: {
 			minmatch: '**/test.js', ignore: '{*.json,node_modules}'
@@ -100,175 +98,120 @@ init({
 			{name: 'livereload', type: 'reload'}
 		]
 	}
-});
+};
 ```
 
 ##### Configuration example 2
 ```js
-const {init} = require('some-dev-chain');
+const Path = require('path');
+const staticServiceDir = '../static';
 
-init({
-	'bpd': {
-		watch: {minmatch: 'apps/pages/**/*.js'},
+module.exports = {
+	'js-module': {
+		description: 'Parse js modules places in views/js-modules/*.js',
+		watch: {minmatch: 'src/views/js-modules/*.js', ignoreByFilename: /^\_/},
 		chain: [
 			{name: 'getWatchedFile'},
-			{name: 'browserify', globalVars: {
-					isProduction: false, 
-					appInfo: ({input}) => Object({
-						number: input.dir.match(/([\d]+)$/)[1],
-						name: input.dir.match(/([\w]+)\\[\d]+$/)[1]
-					})
-				} 
+			{name: 'browserify'},
+			{
+				name: 'setVariable',
+				alias: '$moduleName',
+				value: (task) => `_module.${task.input.base}`
 			},
-			{name: 'writeFiles', afterDir: '/dist/', fileName: 'main'},
+			{name: 'writeFiles', path: `${staticServiceDir}/scripts/($moduleName)`},
 			{name: 'livereload', type: 'reload'}
 		]
 	},
-	'bpr': {
-		description: 'Build page script result with Babel',
-		runFromCli: true,
-		cliVars: '$n',
-		chain: [
-			{name: 'getFiles', path: 'apps/pages/($n)/main.js'},
-			{name: 'babel', type: 'insert-polifils'},
-			{name: 'browserify', globalVars: {
-					isProduction: true, 
-					appInfo: ({variables}) => Object({
-						number: variables.$n,
-						name: 'tests'
-					})
-				} 
-			},
-			{name: 'babel'},
-			{name: 'minify'},
-			{name: 'writeFiles', dir: 'apps/pages/($n)/dist/', fileName: 'main'},
-			{name: 'livereload', type: 'reload'}
-		]
-	},
-	'bppd': {
-		watch: {minmatch: 'apps/php-pages/**/*.js'},
+	'js-page': {
+		description: 'Parse js places in views/pages/**/*.js',
+		watch: {minmatch: 'src/views/pages/**/*.js', ignoreByFilename: /^\_/},
 		chain: [
 			{name: 'getWatchedFile'},
-			{name: 'browserify', globalVars: {
-					isProduction: false, 
-					appInfo: ({input}) => Object({
-						number: input.dir.match(/([\d]+)$/)[1],
-						name: input.dir.match(/([\w]+)\\[\d]+$/)[1]
-					})
-				} 
+			{name: 'browserify'},
+			{
+				name: 'setVariable',
+				alias: '$moduleName',
+				value: ({inputFilePaths}) => `${_parseModuleName(inputFilePaths[0])}.${Path.parse(inputFilePaths[0]).name}.js`
 			},
-			{name: 'writeFiles', afterDir: '/dist/'},
+			{name: 'writeFiles', path: `${staticServiceDir}/scripts/($moduleName)`},
 			{name: 'livereload', type: 'reload'}
 		]
 	},
-	'bppr': {
-		description: 'Build page script result with Babel',
+	'pack-scripts': {
+		description: 'Parse result of all js modules with babel',
 		runFromCli: true,
-		cliVars: '$n $filename',
 		chain: [
-			{name: 'getFiles', path: 'apps/php-pages/($n)/($filename).js'},
-			{name: 'babel', type: 'insert-polifils'},
-			{name: 'browserify', globalVars: {
-					isProduction: true, 
-					appInfo: ({variables}) => Object({
-						number: variables.$n,
-						name: 'tests'
-					})
-				} 
-			},
+			{name: 'getFiles', path: ['src/views/pages/**/*.js', 'src/views/js-modules/*.js'], ignoreByFilename: /^\_/},
 			{name: 'babel'},
-			{name: 'minify'},
-			{name: 'writeFiles', dir: 'apps/php-pages/($n)/dist/'},
-			{name: 'livereload', type: 'reload'}
-		]
-	},
-
-	'btd': {
-		description: 'Build test-app',
-		watch: {minmatch: 'apps/tests/**/*.js'},
-		chain: [
-			{name: 'getWatchedFile'},
-			{name: 'browserify', globalVars: {
-					isProduction: false, 
-					appInfo: ({input}) => Object({
-						number: input.dir.match(/([\d]+)$/)[1],
-						name: input.dir.match(/([\w]+)\\[\d]+$/)[1]
-					})
-				} 
-			},
-			{name: 'writeFiles', afterDir: '/dist/', fileName: 'build'},
-			{name: 'livereload', type: 'reload'}
-		]
-	},
-	'btr': {
-		description: 'Build test-app result with Babel',
-		runFromCli: true,
-		cliVars: '$n',
-		chain: [
-			{name: 'getFiles', path: 'apps/tests/($n)/app.js'},
-			{name: 'babel', type: 'insert-polifils'},
-			{name: 'browserify', globalVars: {
-					isProduction: true, 
-					appInfo: ({variables}) => Object({
-						number: variables.$n,
-						name: 'tests'
-					})
-				} 
-			},
-			{name: 'babel'},
-			{name: 'minify'},
-			{name: 'writeFiles', dir: 'apps/tests/($n)/dist/', fileName: 'build-r'},
-			{name: 'livereload', type: 'reload'}
-		]
-	},
-	'bte': {
-		description: 'Build test-app external',
-		runFromCli: true,
-		cliVars: '$n',
-		chain: [
-			{name: 'getFiles', path: 'apps/tests/($n)/app.js'},
-			{name: 'babel', type: 'insert-polifils'},
-			{name: 'browserify', globalVars: {
-					isProduction: true, 
-					appInfo: ({variables}) => Object({
-						number: variables.$n,
-						name: 'tests'
-					})
-				} 
-			},
-			{name: 'babel'},
-			{name: 'minify'},
-			{name: 'insertChain', alias: 'css', chain: [
-				{name: 'getFiles', path: 'apps/tests/($n)/app.scss'},
-				{name: 'sass', globalVars: {isExternal: true}},
-				{name: 'minify'},
-				{name: 'cssToJs', styleName: 'test-engine'}
-			]},
-			{name: 'concat'},
-			{name: 'writeFiles', dir: 'apps/tests/($n)/dist/', fileName: 'build-e'},
-			{name: 'livereload', type: 'reload'}
-		]
-	},
-
-	'scss': {
-		description: 'Parse all scss',
-		watch: {minmatch: 'apps/**/*.scss', ignoreByFilename: /^\_/},
-		chain: [
-			{name: 'getWatchedFile'},
-			{name: 'sass', globalVars: {isExternal: false}},
+			{name: 'browserify', globalVars: {}},
 			{name: 'minify'},
 			{
-				name: 'if', 
-				handler: task => task.input.dir.indexOf('pages') > -1,
-				then: [{name: 'writeFiles', afterDir: '/dist/', ext: '.css', ignoreRemoveFiles: /./}],
-				else: [{name: 'writeFiles', afterDir: '/dist/', ext: '.css', ignoreRemoveFiles: /./}]
+				name: 'middleware', 
+				handler: ({files}) => {
+					files.forEach(file => {
+						const {dir, name, full} = file.pathSegments;
+
+						if (dir.indexOf('views/js-modules') > -1) return file.setName(`_module.${name}`);
+
+						const moduleName = _parseModuleName(full);
+						return file.setName(`${moduleName}.${name}`);
+					});
+				}
 			},
-			{name: 'livereload', type: 'changed'}
+			{name: 'writeFiles', dir: `${staticServiceDir}/scripts`},
+			{name: 'livereload', type: 'reload'}
 		]
 	},
-	'htmlReload': {
-		watch: {minmatch: 'pages/**/*.html'},
-		chain: [{name: 'livereload', type: 'reload'}]
+
+	'scss-module': {
+		description: 'Parse scss modules places in views/scss-modules/*.scss',
+		watch: {minmatch: 'src/views/scss-modules/*.scss', ignoreByFilename: /^\_/},
+		chain: [
+			{name: 'getWatchedFile'},
+			{name: 'sass'},
+			{name: 'minify'},
+			{
+				name: 'setVariable',
+				alias: '$moduleName',
+				value: ({inputFilePaths}) => `_module.${Path.parse(inputFilePaths[0]).name}`
+			},
+			{name: 'writeFiles', path: `${staticServiceDir}/css/($moduleName).css`, ignoreRemoveFiles: /.*/},
+			{name: 'livereload', type: 'change'}
+		]
+	},
+	'scss-page': {
+		description: 'Parse scss places in views/pages/**/*.scss',
+		watch: {minmatch: 'src/views/pages/**/*.scss', ignoreByFilename: /^\_/},
+		chain: [
+			{name: 'getWatchedFile'},
+			{name: 'sass'},
+			{name: 'minify'},
+			{
+				name: 'setVariable',
+				alias: '$moduleName',
+				value: ({inputFilePaths}) => `${_parseModuleName(inputFilePaths[0])}.${Path.parse(inputFilePaths[0]).name}.css`
+			},
+			{name: 'writeFiles', path: `${staticServiceDir}/css/($moduleName)`, ignoreRemoveFiles: /.*/},
+			{name: 'livereload', type: 'change'}
+		]
 	}
-});
+};
+
+
+function _parseModuleName(filePath) {
+	filePath = Path.normalize(filePath);
+
+	const componentPathSegments = Path.parse(filePath);
+	const pathSegments = componentPathSegments.dir.split(Path.sep);
+	let result = '';
+
+	for (const key in pathSegments) {
+		const segment = pathSegments[pathSegments.length - key - 1];
+		if (segment == 'views') break;
+
+		result += `${segment}.`;
+	}
+
+	return result.replace(/\.$/, '');
+}
 ```
