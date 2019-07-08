@@ -16,6 +16,9 @@ $ node_modules/.bin/dev-chain --help
 $ node_modules/.bin/dev-chain serve :path-to-config
 ```
 ## Documentation
+##### Configure tasks
+Todo...
+
 ##### Parser tools
 | Name | Description | Configuration
 | ------ | ----------- | ------ |
@@ -28,6 +31,20 @@ $ node_modules/.bin/dev-chain serve :path-to-config
 | Livereload | Livereload trigger | **type** *::string* - Use **"reload"** value for reload page |
 ||| **type** *::string* - Use **"change"** value for insert changes |
 
+##### Read/write files tools
+| Name | Description | Configuration
+| ------ | ----------- | ------ |
+| getFiles | Get files for inserting into chain | **[REQUIRED]** **path** *::string* - Path as minmatch |
+||| **ignoreByFilename** *::RegExp* - Use for ignoring files by name of file |
+||| **globOptions** *::object* - Glob params. See https://www.npmjs.com/package/glob |
+| getWatchedFiles | Get changed file from watcher | - |
+| writeFiles | Get changed file from watcher | **path** *::string* - Write file with absolute path. Use for single file |
+||| **dir** *::string* - Change dir path of files |
+||| **afterDir** *::string* - Add path after files dir paths. Relative paths like "../../" is supported |
+||| **fileName** *::string* - Change name of files |
+||| **prefix** *::string* - Insert prefix after name of file into files |
+||| **ext** *::string* - Change ext of files |
+
 ##### Inner tools
 | Name | Description | Configuration
 | ------ | ----------- | ------ |
@@ -37,91 +54,12 @@ $ node_modules/.bin/dev-chain serve :path-to-config
 Todo...
 
 ## Examples
-##### Configuration example 1
-```js
-module.exports = {
-	'pack': {
-		watch: {
-			minmatch: '**/test.js', ignore: '{*.json,node_modules}'
-		},
-		runFromCli: true,
-		cliVars: '$input $output',
-		description: 'compiler .js',
-		chain: [
-			{
-				name: 'if', 
-				variable: '$input',
-				eq: /./, 
-				then: [
-					{name: 'setVariable', alias: '$dir', value: ({variables: vars}) => Path.dirname(vars.$input)},
-					{name: 'getFiles', path: '($input)'}
-				],
-				else: [
-					{name: 'setVariable', alias: '$dir', value: (task) => task.input.dir},
-					{name: 'getWatchedFile'}
-				]
-			},
-			{name: 'babel'},
-			{name: 'browserify', globalVars: {}},
-			{name: 'minify'},
-			{name: 'insertChain', alias: 'css', chain: [
-				{name: 'getFiles', path: '($dir)/test.scss'},
-				{name: 'sass', globalVars: {a: '#fff'}},
-				{name: 'minify'},
-				{name: 'cssToJs'}
-			]},
-			{name: 'concat'},
-			{
-				name: 'if',
-				variable: '$output',
-				eq: /./,
-				then: [{name: 'writeFiles', path: '($output)'}],
-				else: [{name: 'writeFiles', dir: '($dir)/../dist/', fileName: 'result', ext: '.js'}]
-			}
-		]
-	},
-	'sass': {
-		watch: {
-			minmatch: '**/*.scss'
-		},
-		chain: [
-			{name: 'getWatchedFile'},
-			{name: 'setVariable', alias: '$dir', value: (task) => task.input.dir},
-			{name: 'sass', globalVars: {a: '#fff'}},
-			{name: 'minify'},
-			{name: 'writeFiles', dir: '($dir)/../dist/', ext: '.css'}
-		]
-	},
-	'reload': {
-		runFromCli: true,
-		chain: [
-			{name: 'livereload', type: 'reload'}
-		]
-	}
-};
-```
-
-##### Configuration example 2
+##### Configuration example
 ```js
 const Path = require('path');
 const staticServiceDir = '../static';
 
 module.exports = {
-	'js-module': {
-		description: 'Parse js modules places in views/js-modules/*.js',
-		watch: {minmatch: 'src/views/js-modules/*.js', ignoreByFilename: /^\_/},
-		chain: [
-			{name: 'getWatchedFile'},
-			{name: 'browserify'},
-			{
-				name: 'setVariable',
-				alias: '$moduleName',
-				value: (task) => `_module.${task.input.base}`
-			},
-			{name: 'writeFiles', path: `${staticServiceDir}/scripts/($moduleName)`},
-			{name: 'livereload', type: 'reload'}
-		]
-	},
 	'js-page': {
 		description: 'Parse js places in views/pages/**/*.js',
 		watch: {minmatch: 'src/views/pages/**/*.js', ignoreByFilename: /^\_/},
