@@ -123,7 +123,7 @@ class Task{
 	}
 	_handleSegmentError(error, segment) {
 		error = error instanceof Error ? error : new Error(error);
-		this.logger.error(`${colors.yellow.bold(`[${segment.name}]`)} "${error}"`);
+		this.logger.error(`${colors.yellow.bold(`[${segment.name}]`)} "${error.stack}"`);
 		return this.break(error);
 	}
 	_reset() {

@@ -1,9 +1,10 @@
 const Path = require('path');
-const sass = require('node-sass');
+const {render} = require('node-sass');
 const autoprefixer = require('autoprefixer');
 const postcss = require('postcss');
 
-const {eachFiles} = require('../utils');
+const {eachFiles, promiseWrap} = require('../utils');
+const renderPromise = promiseWrap(render);
 
 module.exports = main;
 
@@ -15,21 +16,20 @@ async function main(task, config = {}) {
 	const globalVarsResult = Object.keys(globalVars)
 		.reduce((result, key) => result += `$${key}: ${toType(globalVars[key])};`, '');
 
-	await eachFiles(files, (file, resolve) => {
+	await eachFiles(files, async (file, resolve) => {
 		const {name, path, contents, pathSegments} = file;
-		
-		sass.render({
+		const postCssConfig = [autoprefixer({browsers: ['last 30 versions'], cascade: false})];
+		const renderConfig = {
 			data: globalVarsResult + contents.toString(),
 			outputStyle: 'compressed',
 			includePaths: [Path.normalize(`${process.cwd()}/node_modules`), process.cwd(), pathSegments.dir, ...customPaths]
-		}, (err, result) => {
-			if (err) throw `${name}: ${err}`;
+		};
+		
+		const result = await renderPromise(renderConfig).catch(error => {throw `${name}: ${error}`});
+		const postResult = await postcss(postCssConfig).process(result.css, {from: undefined});
 
-			postcss([ autoprefixer({browsers: ['last 30 versions'], cascade: false}) ]).process(result.css, {from: undefined}).then((result) => {
-				file.setContents(result.css);
-				resolve();
-			});
-		});
+		file.setContents(postResult.css);
+		resolve();
 	});
 }
 

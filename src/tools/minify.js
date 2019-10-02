@@ -24,7 +24,7 @@ async function main(task, config = {}) {
 
 async function jsMin(name, file) {
 	const result = UglifyJS.minify(file.contents.toString());
-	if (result.error) throw `${name}: ${result.error}`;
+	if (result.error) throw `${name}: ${result.error.stack}`;
 
 	return result.code;
 }

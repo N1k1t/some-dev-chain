@@ -20,9 +20,9 @@ async function main(task, config = {}) {
 		globalVars[key] = () => JSON.stringify(variable);
 	}
 
-	await eachFiles(files, (file, resolve) => {
+	await eachFiles(files, (file, resolve, reject) => {
 		const {contents, pathSegments} = file;
-		const {full, dir} = pathSegments;
+		const {full, dir, name} = pathSegments;
 
 		const syntaxErrorResult = syntaxError(contents, full);
 		if (syntaxErrorResult) throw syntaxErrorResult;
@@ -34,7 +34,7 @@ async function main(task, config = {}) {
 		});
 
 		result.bundle((err, result) => {
-			if (err) throw `${name}: ${err}`;
+			if (err) return reject(`${name}: ${err}`);
 
 			file.setContents(result);
 			resolve();

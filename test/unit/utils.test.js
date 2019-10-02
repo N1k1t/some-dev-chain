@@ -13,7 +13,7 @@ describe('Utils: Meta', () => {
 		assert.equal(path, `${sep}qwe${sep}rty${sep}qwe`);
 	});
 	it('[parseCliArgsAsVariables]: positive', () => {
-		const variables = parseCliArgsAsVariables('$input $output', 'qwe', 'rty');
+		const variables = parseCliArgsAsVariables(['$input', '$output'], 'qwe', 'rty');
 
 		assert.propertyVal(variables, '$input', 'qwe', '$input variable');
 		assert.propertyVal(variables, '$output', 'rty', '$output variable');

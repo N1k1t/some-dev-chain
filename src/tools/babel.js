@@ -1,6 +1,8 @@
 const Path = require('path');
 const babel = require('babel-core');
-const {eachFiles} = require('../utils');
+
+const {eachFiles, babelInclude} = require('../utils');
+const {getPluginPath, getPresetPath} = babelInclude;
 
 module.exports = main;
 
@@ -12,9 +14,18 @@ async function main(task, config = {}) {
 	await eachFiles(files, (file, resolve) => {
 		const {contents} = file;
 		let babelConfig = {
-			plugins: ['transform-object-assign', 'transform-es2015-template-literals', 'transform-remove-strict-mode'].map(getPluginPath),
+			plugins: [
+				'transform-object-assign', 
+				'transform-es2015-template-literals', 
+				'transform-remove-strict-mode', 
+				'transform-object-rest-spread',
+				// 'transform-runtime'
+				// 'transform-async-to-generator'
+			].map(getPluginPath),
 			presets: ['es2015'].map(getPresetPath)
 		};
+
+		// babelConfig.plugins[4] = [babelConfig.plugins[4], {'regenerator': true}];
 
 		switch(type) {
 			case 'insert-polifils': babelConfig = {...babelConfig, plugins : ['transform-runtime', 'transform-async-to-generator'].map(getPluginPath)};
@@ -25,11 +36,4 @@ async function main(task, config = {}) {
 
 		resolve();
 	});
-}
-
-function getPluginPath(name) {
-	return Path.resolve(`${__dirname}/../../node_modules/babel-plugin-${name}`);
-}
-function getPresetPath(name) {
-	return Path.resolve(`${__dirname}/../../node_modules/babel-preset-${name}`);
 }

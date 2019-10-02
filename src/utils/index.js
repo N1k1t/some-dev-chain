@@ -1,5 +1,7 @@
-const promiseWrap = require('./promise-wrap');
 const Path = require('path');
+
+const promiseWrap = require('./promise-wrap');
+const babelInclude = require('./babel-include');
 
 module.exports = {
 	eachFiles,
@@ -7,7 +9,8 @@ module.exports = {
 	parseCliArgsAsVariables,
 	promiseWrap,
 	catchError,
-	getEnvValue
+	getEnvValue,
+	babelInclude
 };
 
 
@@ -28,7 +31,14 @@ function parseCliArgsAsVariables(params, ...args) {
 }
 
 function eachFiles(files, cb) {
-	return Promise.all([...files.values()].map(file => new Promise(resolve => cb(file, resolve))));
+	return Promise.all([...files.values()].map(file => new Promise(async (res, rej) => {
+		// Catch error from async or sync handler
+		try {
+			await cb(file, res, rej);
+		} catch(error) {
+			rej(error);
+		}
+	})));
 }
 function catchError(fn) {
 	return fn.then(result => [null, result]).catch(error => [error]);

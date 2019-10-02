@@ -20,7 +20,6 @@ async function main(task, config = {}) {
 		.reduce((map, array) => map.concat(array), [])
 		.filter(path => {
 			const {name, ext} = File.parsePathSegments(path);
-
 			if (ignoreByFilename && ignoreByFilename.test(`${name}${ext}`)) return false;
 			return true;
 		});

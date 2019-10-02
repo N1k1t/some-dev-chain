@@ -15,6 +15,7 @@ const {
 	sass,
 	minify,
 	browserify,
+	typescript,
 	babel,
 	insertChain
 } = tools;
