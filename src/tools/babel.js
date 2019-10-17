@@ -14,21 +14,17 @@ async function main(task, config = {}) {
 	await eachFiles(files, (file, resolve) => {
 		const {contents} = file;
 		let babelConfig = {
+			presets: ['es2015'],
 			plugins: [
 				'transform-object-assign', 
 				'transform-es2015-template-literals', 
 				'transform-remove-strict-mode', 
-				'transform-object-rest-spread',
-				// 'transform-runtime'
-				// 'transform-async-to-generator'
-			].map(getPluginPath),
-			presets: ['es2015'].map(getPresetPath)
+				'transform-object-rest-spread'
+			],
 		};
 
-		// babelConfig.plugins[4] = [babelConfig.plugins[4], {'regenerator': true}];
-
 		switch(type) {
-			case 'insert-polifils': babelConfig = {...babelConfig, plugins : ['transform-runtime', 'transform-async-to-generator'].map(getPluginPath)};
+			case 'insert-polifils': babelConfig = {...babelConfig, plugins : ['transform-runtime', 'transform-async-to-generator']};
 		}
 
 		const result = babel.transform(contents, babelConfig);
