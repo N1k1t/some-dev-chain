@@ -23,7 +23,8 @@ async function main(task, config = {}) {
 }
 
 async function jsMin(name, file) {
-	const result = UglifyJS.minify(file.contents.toString());
+	const options = {compress: {dead_code: true}};
+	const result = UglifyJS.minify(file.contents.toString(), options);
 	if (result.error) throw `${name}: ${result.error.stack}`;
 
 	return result.code;

@@ -19,7 +19,8 @@ async function main(task, config = {}) {
 				'transform-object-assign', 
 				'transform-es2015-template-literals', 
 				'transform-remove-strict-mode', 
-				'transform-object-rest-spread'
+				'transform-object-rest-spread',
+				'transform-async-to-generator',
 			],
 		};
 
