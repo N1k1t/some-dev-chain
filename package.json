@@ -1,21 +1,10 @@
 {
   "author": "n1k1t",
   "dependencies": {
-    "autoprefixer": "^9.0.1",
-    "babel-core": "^6.26.3",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-es2015-template-literals": "^6.22.0",
-    "babel-plugin-transform-object-assign": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-plugin-transform-remove-strict-mode": "0.0.2",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2017": "^6.24.1",
-    "babel-preset-latest": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "browserify": "^16.2.2",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "autoprefixer": "^9.8.6",
+    "browserify": "^16.5.2",
     "chokidar": "^2.0.4",
     "colors": "^1.3.1",
     "commander-without-exit": "^1.0.0",
@@ -26,10 +15,11 @@
     "lodash": "^4.17.11",
     "node-sass": "^4.9.2",
     "postcss": "^7.0.1",
+    "regenerator": "^0.14.7",
     "request-promise": "^4.2.4",
     "some-async-chain": "^0.4.0",
     "syntax-error": "^1.4.0",
-    "uglify-js": "^3.4.6"
+    "uglify-es": "^3.3.9"
   },
   "description": "Library for pack front whith chains",
   "devDependencies": {
