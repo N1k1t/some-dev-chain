@@ -18,7 +18,7 @@ async function main(task, config = {}) {
 
 	await eachFiles(files, async (file, resolve) => {
 		const {name, path, contents, pathSegments} = file;
-		const postCssConfig = [autoprefixer({browsers: ['last 30 versions'], cascade: false})];
+		const postCssConfig = [autoprefixer({overrideBrowserslist: ['defaults'], cascade: false})];
 		const renderConfig = {
 			data: globalVarsResult + contents.toString(),
 			outputStyle: 'compressed',
