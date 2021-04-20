@@ -6,7 +6,7 @@ const {help, serve} = require('./routes');
 const {throwError} = require('./stdout-utils');
 
 const [,,command, configPath] = process.argv;
-const rootPath = process.env['PWD'];
+const rootPath = process.cwd();
 const instance = {rootPath, command, configPath};
 
 route(instance, command);
