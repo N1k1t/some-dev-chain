@@ -18,7 +18,7 @@ function insertValiablesInPath(variables = {}, path) {
 	const matches = path.match(/\$\{[\w]+\}/g) || [];
 
 	for (const match of matches) {
-		const variable = match.substr(1, match.length - 2);
+		const variable = match.replace(/[{}]/g, '');
 		const value = variables[variable];
 
 		path = path.replace(match, value);
