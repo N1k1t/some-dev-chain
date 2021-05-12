@@ -14,7 +14,7 @@
     "gulp-util": "^3.0.8",
     "lodash": "^4.17.11",
     "node-sass": "^4.9.2",
-    "postcss": "^7.0.1",
+    "postcss": "^8.2.10",
     "regenerator": "^0.14.7",
     "request-promise": "^4.2.4",
     "some-async-chain": "^0.4.0",
