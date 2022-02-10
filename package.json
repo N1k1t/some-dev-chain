@@ -13,7 +13,7 @@
     "gulp-livereload": "^3.8.1",
     "gulp-util": "^3.0.8",
     "lodash": "^4.17.11",
-    "node-sass": "^4.9.2",
+    "node-sass": "^7.0.0",
     "postcss": "^7.0.1",
     "regenerator": "^0.14.7",
     "request-promise": "^4.2.4",
